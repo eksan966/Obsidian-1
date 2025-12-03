@@ -6432,8 +6432,8 @@ local PlayerInfoFrame = New("Frame", {
 
         local avatarUrl = "rbxassetid://0"
         pcall(function()
-            avatarUrl = game.Players:GetUserThumbnailAsync(
-                game.Players.LocalPlayer.UserId,
+            avatarUrl = Players:GetUserThumbnailAsync(
+                Players.LocalPlayer.UserId,
                 Enum.ThumbnailType.AvatarBust,
                 Enum.ThumbnailSize.Size48x48
             )
@@ -6467,7 +6467,7 @@ local PlayerInfoFrame = New("Frame", {
             BackgroundTransparency = 1,
             Size = UDim2.new(0, 80, 0, 16),
             Position = UDim2.fromOffset(50, 4),
-            Text = game.Players.LocalPlayer.DisplayName,
+            Text = Players.LocalPlayer.DisplayName,
             TextSize = 12,
             TextColor3 = Library.Scheme.FontColor,
             TextXAlignment = Enum.TextXAlignment.Left,
@@ -6480,7 +6480,7 @@ local PlayerInfoFrame = New("Frame", {
             BackgroundTransparency = 1,
             Size = UDim2.new(0, 80, 0, 12),
             Position = UDim2.fromOffset(50, 20),
-            Text = "@" .. game.Players.LocalPlayer.Name,
+            Text = "@" .. Players.LocalPlayer.Name,
             TextSize = 10,
             TextColor3 = Color3.fromRGB(200, 200, 200),
             TextXAlignment = Enum.TextXAlignment.Left,
