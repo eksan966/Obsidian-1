@@ -20,7 +20,15 @@ local gethui = gethui or function()
 end
 
 local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
-local Mouse = cloneref(LocalPlayer:GetMouse())
+local Mouse = {
+    X = 0,
+    Y = 0
+}
+RunService.Heartbeat:Connect(function()
+    local MouseLocation = UserInputService:GetMouseLocation()
+    Mouse.X = MouseLocation.X
+    Mouse.Y = MouseLocation.Y
+end)
 
 local Labels = {}
 local Buttons = {}
