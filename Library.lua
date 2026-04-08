@@ -1,11 +1,18 @@
-local CursorKey = string.format(
-    "%s_%s_%d",
-    string.gsub(tostring(os.clock()), "%.", "_"),
-    string.gsub(tostring(tick()), "%.", "_"),
-    math.random(10000000, 99999999)
-)
--- 与 BindToRenderStep 绑定的名称必须全局唯一，固定字符串会与重载脚本/其他外挂冲突并触发引擎警告
-local CursorRenderStepName = "rs_" .. CursorKey
+local function randomName(len: number?): string
+    len = len or 20
+    local pool = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    local parts = table.create(len)
+    for i = 1, len do
+        local j = math.random(1, #pool)
+        parts[i] = pool:sub(j, j)
+    end
+    return table.concat(parts)
+end
+
+local CursorKey = randomName(24)
+local MainFrameInstanceName = randomName(20)
+local ContainerInstanceName = randomName(20)
+local CursorRenderStepName = randomName(24)
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -6101,7 +6108,7 @@ function Library:CreateWindow(WindowInfo)
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, -1)
             end,
-            Name = CursorKey .. "_mf",
+            Name = MainFrameInstanceName,
             Text = "",
             Position = WindowInfo.Position,
             Size = WindowInfo.Size,
@@ -6560,7 +6567,7 @@ local PlayerInfoFrame = New("Frame", {
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
-            Name = CursorKey .. "_ct",
+            Name = ContainerInstanceName,
             Position = UDim2.fromOffset(InitialSidebarWidth, 49),
             Size = UDim2.new(1, -InitialSidebarWidth, 1, -70),
             Parent = MainFrame,
