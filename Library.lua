@@ -1,4 +1,9 @@
-local CursorKey = tostring(os.clock())
+local CursorKey = string.format(
+    "%s_%s_%d",
+    string.gsub(tostring(os.clock()), "%.", "_"),
+    string.gsub(tostring(tick()), "%.", "_"),
+    math.random(10000000, 99999999)
+)
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1229,7 +1234,7 @@ local function ParentUI(UI: Instance, SkipHiddenUI: boolean?)
 end
 
 local ScreenGui = New("ScreenGui", {
-    Name = "Obsidian_" .. CursorKey,
+    Name = CursorKey,
     DisplayOrder = 999,
     ResetOnSpawn = false,
 })
@@ -6091,7 +6096,7 @@ function Library:CreateWindow(WindowInfo)
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, -1)
             end,
-            Name = "Main",
+            Name = CursorKey .. "_mf",
             Text = "",
             Position = WindowInfo.Position,
             Size = WindowInfo.Size,
@@ -6550,7 +6555,7 @@ local PlayerInfoFrame = New("Frame", {
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
-            Name = "Container",
+            Name = CursorKey .. "_ct",
             Position = UDim2.fromOffset(InitialSidebarWidth, 49),
             Size = UDim2.new(1, -InitialSidebarWidth, 1, -70),
             Parent = MainFrame,
