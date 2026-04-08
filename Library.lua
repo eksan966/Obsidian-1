@@ -13,6 +13,8 @@ local CursorKey = randomName(24)
 local MainFrameInstanceName = randomName(20)
 local ContainerInstanceName = randomName(20)
 local CursorRenderStepName = randomName(24)
+local FileWorkspaceRoot = randomName(24)
+local LibrarySettingsFolderName = randomName(24)
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -118,18 +120,29 @@ local Library = {
     DPIRegistry = {},
 }
 
+Library.WorkspaceAssetRoot = FileWorkspaceRoot
+Library.WorkspaceSettingsFolder = LibrarySettingsFolderName
+
+if makefolder and isfolder then
+    pcall(function()
+        if not isfolder(LibrarySettingsFolderName) then
+            makefolder(LibrarySettingsFolderName)
+        end
+    end)
+end
+
 local ObsidianImageManager = {
     Assets = {
         TransparencyTexture = {
             RobloxId = 139785960036434,
-            Path = "Obsidian/assets/TransparencyTexture.png",
+            Path = FileWorkspaceRoot .. "/assets/TransparencyTexture.png",
 
             Id = nil,
         },
 
         SaturationMap = {
             RobloxId = 4155801252,
-            Path = "Obsidian/assets/SaturationMap.png",
+            Path = FileWorkspaceRoot .. "/assets/SaturationMap.png",
 
             Id = nil,
         },
@@ -196,7 +209,10 @@ do
             return
         end
 
-        local URLPath = AssetPath:gsub("Obsidian/", "")
+        local prefix = FileWorkspaceRoot .. "/"
+        local URLPath = if AssetPath:sub(1, #prefix) == prefix
+            then AssetPath:sub(#prefix + 1)
+            else AssetPath:gsub("^[^/]+/", "")
         writefile(AssetPath, game:HttpGet(BaseURL .. URLPath))
     end
 
