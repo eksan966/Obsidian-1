@@ -4,6 +4,8 @@ local CursorKey = string.format(
     string.gsub(tostring(tick()), "%.", "_"),
     math.random(10000000, 99999999)
 )
+-- 与 BindToRenderStep 绑定的名称必须全局唯一，固定字符串会与重载脚本/其他外挂冲突并触发引擎警告
+local CursorRenderStepName = "rs_" .. CursorKey
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1968,6 +1970,9 @@ function Library:Unload()
     end
 
     Library.Unloaded = true
+    pcall(function()
+        RunService:UnbindFromRenderStep(CursorRenderStepName)
+    end)
     ScreenGui:Destroy()
     getgenv().Library = nil
 end
@@ -7702,9 +7707,9 @@ local PlayerInfoFrame = New("Frame", {
         if Library.Toggled and not Library.IsMobile then
             local OldMouseIconEnabled = UserInputService.MouseIconEnabled
             pcall(function()
-                RunService:UnbindFromRenderStep("ShowCursor")
+                RunService:UnbindFromRenderStep(CursorRenderStepName)
             end)
-            RunService:BindToRenderStep("ShowCursor", Enum.RenderPriority.Last.Value, function()
+            RunService:BindToRenderStep(CursorRenderStepName, Enum.RenderPriority.Last.Value, function()
                 UserInputService.MouseIconEnabled = not Library.ShowCustomCursor
 
                 Cursor.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
@@ -7713,10 +7718,13 @@ local PlayerInfoFrame = New("Frame", {
                 if not (Library.Toggled and ScreenGui and ScreenGui.Parent) then
                     UserInputService.MouseIconEnabled = OldMouseIconEnabled
                     Cursor.Visible = false
-                    RunService:UnbindFromRenderStep("ShowCursor")
+                    RunService:UnbindFromRenderStep(CursorRenderStepName)
                 end
             end)
         elseif not Library.Toggled then
+            pcall(function()
+                RunService:UnbindFromRenderStep(CursorRenderStepName)
+            end)
             SetSidebarHighlight(false)
             TooltipLabel.Visible = false
             for _, Option in pairs(Library.Options) do
